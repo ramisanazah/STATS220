@@ -12,7 +12,7 @@ A little about me:
 2. I love cats!
 3. I love cooking in my free time!
 
-![Click here to  find more about me!](https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUIcmlja3JvbGw%3D)
+[Click here to  find more about me!](https://www.youtube.com/watch?v=dQw4w9WgXcQ&pp=ygUIcmlja3JvbGw%3D)
 
 
 A meme that captures how I currently feel about my university studies is ![](https://media1.tenor.com/m/aj2_-zs7zZoAAAAd/dancing-excited.gif)
