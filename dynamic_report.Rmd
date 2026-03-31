@@ -1,0 +1,106 @@
+---
+title: Spark NorthWest 3G Shutdown Data
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+
+```
+
+```{css}
+
+```
+
+## What's going on with this data?
+
+You need to change the contents of this Rmd! Replace the R code and markdown give below in this template document.
+
+```{r file='exploration.R', eval=FALSE, echo=TRUE}
+
+library(magick)
+library(tidyverse)
+
+# URL for the Google sheet published as a CSV and assigning it to logged_data
+logged_data <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7hXOK9yfyx-RxWw31m0r4blZ4quf19kEsSE16WkpTIttuX79yGV0U2nSYPivzCPRYg6QDomSB6SdM/pub?output=csv"
+# Using the read_csv() function to read the data
+# into a data frame named logged_data
+logged_data <- read_csv(logged_data)
+# Using the rename() function to read the data into a data frame names logged_data
+latest_data <- logged_data %>%
+  rename(date_of_shift = 2,
+         customers_age_range = 3, 
+         did_customer_upgrade_device = 4,
+         customers_device_type = 5,
+         upgraded_device_type = 6,
+         spark3g_offer = 7,
+         customers_feeling = 8,
+         device_status = 9,
+         roaming_upgrade = 10,
+         spark3g_shutdown_rating = 11)
+
+
+
+#finding the minimum age range of customers that have come into Spark NorthWest store to query about the 3G network shutdown and embedding it into a statement
+paste("The youngest age that came in the Spark NorthWest store to query about the 3G shutdown is",
+      min(latest_data$customers_age_range),
+      collapse = " ")
+
+#finding the maximum age range of customers that have come into Spark NorthWest store to query about the 3G network shutdown and embedding it into a statement
+paste("The oldest age came in the Spark NorthWest store to query about the 3G shutdown is",
+      max(latest_data$customers_age_range),
+      collapse = " ")
+
+#finding the average rating of what the Spark NorthWest staff think about how well Spark is doing regards the change from 3G network to 4G and embedding it into a statement
+average_rating <- mean(latest_data$spark3g_shutdown_rating, na.rm = TRUE) %>% round(1)
+paste("An average rating of",
+      average_rating,
+      "reflects the Spark NorthWest staff’s view of how well Spark NZ is managing the transition from 3G network to 4G/5G network.",
+      collapse = " ")
+
+  
+#making a plot to show the ratings of Spark NorthWest staffs thoughts on 3G network shutdown
+#first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
+customer_age_range <- latest_data$customers_age_range
+customer_upgrade_device <- latest_data$did_customer_upgrade_device
+logged_data %>%
+  ggplot() + 
+  #setting x axis as the rating of staff and filling in whether the customer upgraded or not, below that setting appropriate labels for title, subtitle, x axis name, y axis name
+  geom_bar(aes(x = customer_age_range, fill = customer_upgrade_device)) + 
+  labs(title = "Did Customer Have To Upgrade Deivce?",
+       subtitle = "Did customers who visited the Spark NorthWest store have to upgrade their device? And what age range?",
+       x = "Customers age range",
+       y = "Number Of Customers")
+
+
+#making new data frame without NA values (blank answers) for whether customer had button phone or smartphone and the blank answers for what device customer upgraded to because both of those questions were conditional questions
+#remove NA values from customers device type data in latest_data
+removingna_customers_device_type <- !is.na(latest_data$customers_device_type)
+#remove NA values from customers upgraded device type data in latest_data
+removingna_upgraded_device_type <- !is.na(latest_data$upgraded_device_type)
+#creating updated rows of those removed NA values 
+rows_without_na <- removingna_customers_device_type & removingna_upgraded_device_type
+#creating updated columns of those removed NA values 
+columns_without_na <- c("customers_device_type", "upgraded_device_type")
+#putting those rows and columns into data frame new_data
+new_data <- latest_data[rows_without_na, columns_without_na]
+
+#making a plot to show the what kind of devices the button phone people have upgraded to and the smart phone people have upgraded to
+#first putting more appropriate variable name for the customers current device type otherwise on the graph it will just display new_data$customers_device_type
+#putting more appropriate variable name for the customers upgraded device otherwise on the graph it will just display new_data$upgraded_device_type
+customer_current_device <- new_data$customers_device_type
+customer_upgraded_device <- new_data$upgraded_device_type
+ggplot() + 
+  #setting x axis as what device type the customer currently has, filling it in with what device they have upgraded to, below that setting appropriate labels for title, subtitle, x axis name, y axis name
+  geom_bar(aes(x = customer_current_device, fill = customer_upgraded_device)) + 
+  labs(title = "What Kind Of Devices Were Bought The Most?",
+       subtitle = "For the customers who had to upgrade from a 3G to a 4G/5G device, what kind of device did they upgrade to?",
+       x = "Customers Current Device",
+       y = "Number Of Customers")
+
+
+```
+
+The best pet to have is a `r best_pet` of course!
+
+![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
