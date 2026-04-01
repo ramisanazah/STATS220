@@ -20,7 +20,6 @@ You need to change the contents of this Rmd! Replace the R code and markdown giv
 
 library(magick)
 library(tidyverse)
-
 # URL for the Google sheet published as a CSV and assigning it to logged_data
 logged_data <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7hXOK9yfyx-RxWw31m0r4blZ4quf19kEsSE16WkpTIttuX79yGV0U2nSYPivzCPRYg6QDomSB6SdM/pub?output=csv"
 # Using the read_csv() function to read the data
@@ -58,18 +57,33 @@ paste("An average rating of",
       "reflects the Spark NorthWest staff’s view of how well Spark NZ is managing the transition from 3G network to 4G/5G network.",
       collapse = " ")
 
-  
+
+
 #making a plot to show the ratings of Spark NorthWest staffs thoughts on 3G network shutdown
 #first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
+customer_device_type <- latest_data$customers_device_type
 customer_age_range <- latest_data$customers_age_range
+logged_data %>%
+  ggplot() + 
+  #setting x axis as the rating of staff and filling in whether the customer upgraded or not, below that setting appropriate labels for title, subtitle, x axis name, y axis name
+  geom_bar(aes(x = customer_upgrade_device, fill = customer_age_range)) + 
+  labs(title = "Did Customer Have To Upgrade Deivce?",
+       subtitle = "Did customers have to upgrade their device? And what age range?",
+       x = "Did Customer Have To Upgrade? (Yes or No)",
+       y = "Number Of Customers")
+
+
+#making a plot to show the ratings of Spark NorthWest staffs thoughts on 3G network shutdown
+#first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
+customer_device_type <- latest_data$customers_device_type
 customer_upgrade_device <- latest_data$did_customer_upgrade_device
 logged_data %>%
   ggplot() + 
   #setting x axis as the rating of staff and filling in whether the customer upgraded or not, below that setting appropriate labels for title, subtitle, x axis name, y axis name
-  geom_bar(aes(x = customer_age_range, fill = customer_upgrade_device)) + 
+  geom_bar(aes(x = customer_upgrade_device, fill = customer_device_type)) + 
   labs(title = "Did Customer Have To Upgrade Deivce?",
-       subtitle = "Did customers who visited the Spark NorthWest store have to upgrade their device? And what age range?",
-       x = "Customers age range",
+       subtitle = "Did customers have to upgrade their device? What current deviice do they have currently?",
+       x = "Did Customer Have To Upgrade? (Yes or No)",
        y = "Number Of Customers")
 
 
@@ -99,8 +113,25 @@ ggplot() +
        y = "Number Of Customers")
 
 
+
+#making a plot to show the ratings of Spark NorthWest staffs thoughts on 3G network shutdown
+#first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
+sparknorthwest_staff_rating <- latest_data$spark3g_shutdown_rating
+logged_data %>%
+  ggplot() +
+  #setting y axis as the rating of staff and setting bar colours to purple, below that setting appropriate labels for title, subtitle, x axis name, y axis name
+  geom_bar(aes(y = sparknorthwest_staff_rating),
+           fill = "#6026a0") +
+  labs(title = "Spark NorthWest Staff Rating",
+       subtitle = "Spark NorthWest staff's ratings on how good of a job Spark NZ is doing in regards to 3G netwoprk shutdown on a scale of 1-10",
+       x = "Rating",
+       y = "Number Of Responses")
+
+
+
+
+
 ```
 
-The best pet to have is a `r best_pet` of course!
 
 ![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
