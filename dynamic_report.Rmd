@@ -9,16 +9,41 @@ knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
 ```
 
 ```{css}
+body {
+  font-family: "Segoe UI", sans-serif;
+  line-height: 1.6;
+  margin: 20px;
+}
 
+h2 {
+  color: #6026a0;
+  border-bottom: 2px solid #6026a0;
+  padding-bottom: 5px;
+}
+
+p {
+  font-size: 16px;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 16px;
+}
+
+.chart-title {
+  font-weight: bold;
+  color: #6026a0;
+}
 ```
 
-## What's going on with this data?
+## What are Spark NorthWest customers doing about the 3G shutdown?
+This dynamic report analyzes the behavior of customers at Spark NorthWest during the 3G shutdown transition. 
 
-You need to change the contents of this Rmd! Replace the R code and markdown give below in this template document.
+The data includes customer age ranges, device types, upgrade decisions, and staff ratings of Spark’s performance. The visualisations below summarise key patterns in the observations collected.
 
-```{r file='exploration.R', eval=FALSE, echo=TRUE}
 
-library(magick)
+
+```{r}
 library(tidyverse)
 # URL for the Google sheet published as a CSV and assigning it to logged_data
 logged_data <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vR7hXOK9yfyx-RxWw31m0r4blZ4quf19kEsSE16WkpTIttuX79yGV0U2nSYPivzCPRYg6QDomSB6SdM/pub?output=csv"
@@ -38,36 +63,30 @@ latest_data <- logged_data %>%
          roaming_upgrade = 10,
          spark3g_shutdown_rating = 11)
 
-
-
-#finding the minimum age range of customers that have come into Spark NorthWest store to query about the 3G network shutdown and embedding it into a statement
-paste("The youngest age that came in the Spark NorthWest store to query about the 3G shutdown is",
-      min(latest_data$customers_age_range),
-      collapse = " ")
+#finding the minimum age range of customers that have come into Spark NorthWest store
 
 #finding the maximum age range of customers that have come into Spark NorthWest store to query about the 3G network shutdown and embedding it into a statement
-paste("The oldest age came in the Spark NorthWest store to query about the 3G shutdown is",
-      max(latest_data$customers_age_range),
-      collapse = " ")
 
 #finding the average rating of what the Spark NorthWest staff think about how well Spark is doing regards the change from 3G network to 4G and embedding it into a statement
 average_rating <- mean(latest_data$spark3g_shutdown_rating, na.rm = TRUE) %>% round(1)
-paste("An average rating of",
-      average_rating,
-      "reflects the Spark NorthWest staff’s view of how well Spark NZ is managing the transition from 3G network to 4G/5G network.",
-      collapse = " ")
+```
+
+The youngest age range that came in the Spark NorthWest store to query about the 3G shutdown is `r min(latest_data$customers_age_range)`.  
+The oldest age range came in the Spark NorthWest store to query about the 3G shutdown is `r max(latest_data$customers_age_range)`.  
+The average staff rating for Spark’s handling of the 3G shutdown was `r average_rating`. This reflects Spark NorthWest staff’s view of how well Spark NZ is managing the transition from 3G network to 4G/5G network.
 
 
 
+```{r}
 #making a plot to show the ratings of Spark NorthWest staffs thoughts on 3G network shutdown
 #first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
 customer_device_type <- latest_data$customers_device_type
 customer_age_range <- latest_data$customers_age_range
-logged_data %>%
+latest_data %>%
   ggplot() + 
   #setting x axis as the rating of staff and filling in whether the customer upgraded or not, below that setting appropriate labels for title, subtitle, x axis name, y axis name
-  geom_bar(aes(x = customer_upgrade_device, fill = customer_age_range)) + 
-  labs(title = "Did Customer Have To Upgrade Deivce?",
+  geom_bar(aes(x = did_customer_upgrade_device, fill = customer_age_range)) + 
+  labs(title = "Did Customer Have To Upgrade their Device?",
        subtitle = "Did customers have to upgrade their device? And what age range?",
        x = "Did Customer Have To Upgrade? (Yes or No)",
        y = "Number Of Customers")
@@ -77,12 +96,12 @@ logged_data %>%
 #first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
 customer_device_type <- latest_data$customers_device_type
 customer_upgrade_device <- latest_data$did_customer_upgrade_device
-logged_data %>%
+latest_data %>%
   ggplot() + 
   #setting x axis as the rating of staff and filling in whether the customer upgraded or not, below that setting appropriate labels for title, subtitle, x axis name, y axis name
   geom_bar(aes(x = customer_upgrade_device, fill = customer_device_type)) + 
-  labs(title = "Did Customer Have To Upgrade Deivce?",
-       subtitle = "Did customers have to upgrade their device? What current deviice do they have currently?",
+  labs(title = "Did Customers Have To Upgrade Device?",
+       subtitle = "Did customers have to upgrade their device? What current device do they have currently?",
        x = "Did Customer Have To Upgrade? (Yes or No)",
        y = "Number Of Customers")
 
@@ -117,21 +136,24 @@ ggplot() +
 #making a plot to show the ratings of Spark NorthWest staffs thoughts on 3G network shutdown
 #first putting more appropriate variable name for the rating otherwise on the graph it will just display latest_data$spark3g_shutdown_rating
 sparknorthwest_staff_rating <- latest_data$spark3g_shutdown_rating
-logged_data %>%
+latest_data %>%
   ggplot() +
   #setting y axis as the rating of staff and setting bar colours to purple, below that setting appropriate labels for title, subtitle, x axis name, y axis name
   geom_bar(aes(y = sparknorthwest_staff_rating),
            fill = "#6026a0") +
   labs(title = "Spark NorthWest Staff Rating",
-       subtitle = "Spark NorthWest staff's ratings on how good of a job Spark NZ is doing in regards to 3G netwoprk shutdown on a scale of 1-10",
+       subtitle = "Spark NorthWest staff's ratings on how good of a job Spark NZ is doing in regards to 3G network shutdown on a scale of 1-10",
        x = "Rating",
        y = "Number Of Responses")
-
-
-
-
 
 ```
 
 
-![](https://c.tenor.com/-qBsG1HwR4oAAAAC/tenor.gif)
+
+
+
+
+
+
+
+
